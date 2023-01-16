@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { Outlet } from "react-router-dom";
 import {
 	NavigationContainer,
@@ -7,8 +7,15 @@ import {
 	NavLinks,
 } from "./navigation.styled";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
+import { UserContext } from "../../contexts/user.context";
+import { signOutUser } from "../../utils/firebase/firebase.utils";
 
 const Navigation = () => {
+	const { currentUser } = useContext(UserContext);
+
+	const signOutHandler = async () => {
+		await signOutUser();
+	};
 	return (
 		<Fragment>
 			<NavigationContainer>
@@ -17,8 +24,13 @@ const Navigation = () => {
 				</LogoContainer>
 				<NavLinks>
 					<NavLink to="/shop">Shop</NavLink>
-					<NavLink to="/auth">SIGN OUT</NavLink>
-					<NavLink to="/auth">SIGN IN</NavLink>
+					{currentUser ? (
+						<NavLink as="span" onClick={signOutHandler}>
+							SIGN OUT
+						</NavLink>
+					) : (
+						<NavLink to="/auth">SIGN IN</NavLink>
+					)}
 				</NavLinks>
 			</NavigationContainer>
 
