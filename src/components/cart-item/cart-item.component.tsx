@@ -15,7 +15,7 @@ const CartItem = ({ cartItem }: CartItemProps) => {
 		<CartItemContainer>
 			<img src={imageUrl} alt={name} />
 			<ItemDetails>
-				<span>name</span>
+				<span>{name}</span>
 				<span>
 					{quantity} x ${price}
 				</span>

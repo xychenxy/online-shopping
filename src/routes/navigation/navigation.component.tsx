@@ -27,7 +27,7 @@ const Navigation = () => {
 					<Logo />
 				</LogoContainer>
 				<NavLinks>
-					<NavLink to="/shop">Shop</NavLink>
+					<NavLink to="/shop">SHOP</NavLink>
 					{currentUser ? (
 						<NavLink as="span" onClick={signOutHandler}>
 							SIGN OUT
