@@ -24,13 +24,13 @@ import {
 } from "firebase/firestore";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyBXaQFjsmVwpl_H54fEHC7RuxELRz6shhk",
-	authDomain: "online-shopping-aefba.firebaseapp.com",
-	projectId: "online-shopping-aefba",
-	storageBucket: "online-shopping-aefba.appspot.com",
-	messagingSenderId: "52782678786",
-	appId: "1:52782678786:web:efcd1e197ac4046d13381b",
-	measurementId: "G-H3B97N76RT",
+	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+	projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+	storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+	appId: import.meta.env.VITE_FIREBASE_APP_ID,
+	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
