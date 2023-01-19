@@ -66,7 +66,6 @@ const PaymentForm = () => {
 			}
 		}
 	};
-	console.log("currentUser", currentUser);
 
 	return (
 		<PaymentFormContainer>
