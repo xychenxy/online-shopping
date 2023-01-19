@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import logger from "redux-logger";
+import thunk from "redux-thunk";
 
 import { rootReducer } from "./root-reducer";
 
@@ -15,8 +16,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
 	reducer: persistedReducer,
-	// devTools: process.env.NODE_ENV !== "production",
-	middleware: [logger],
+	devTools: import.meta.env.MODE !== "production",
+	middleware: [import.meta.env.MODE !== "production" && logger, thunk].filter(
+		Boolean
+	),
 });
 
 export const persistor = persistStore(store);
