@@ -1,8 +1,13 @@
-import { createAction } from "../../utils/reducer/reducer.util";
-import { CART_ACTION_TYPES } from "./cart.types";
+import { createAction, withMatcher } from "../../utils/reducer/reducer.util";
+import { CART_ACTION_TYPES, CartItem } from "./cart.types";
+import { CategoryItem } from "../categories/category.types";
+import { ActionWithPayload } from "../../utils/reducer/reducer.util";
 
 // helper function
-const addCartItem = (cartItems, productToAdd) => {
+const addCartItem = (
+	cartItems: CartItem[],
+	productToAdd: CategoryItem
+): CartItem[] => {
 	// find if contains productToAdd
 	const existingCartItem = cartItems.find(
 		(cartItem) => cartItem.id === productToAdd.id
@@ -19,13 +24,16 @@ const addCartItem = (cartItems, productToAdd) => {
 	return [...cartItems, { ...productToAdd, quantity: 1 }];
 };
 
-const removeCartItem = (cartItems, cartItemToRemove) => {
+const removeCartItem = (
+	cartItems: CartItem[],
+	cartItemToRemove: CartItem
+): CartItem[] => {
 	// find the item to remove
 	const existingCartItem = cartItems.find(
 		(cartItem) => cartItem.id === cartItemToRemove.id
 	);
 	// check if quantity is equal to 1, if it is remove that from the cart
-	if (existingCartItem.quantity === 1) {
+	if (existingCartItem && existingCartItem.quantity === 1) {
 		return cartItems.filter(
 			(cartItem) => cartItem.id !== cartItemToRemove.id
 		);
@@ -38,24 +46,50 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
 	);
 };
 
-const clearCartItem = (cartItems, cartItemToClear) => {
+const clearCartItem = (
+	cartItems: CartItem[],
+	cartItemToClear: CategoryItem
+): CartItem[] => {
 	// find the item to clear
 	return cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 };
 
-export const setIsCartOpen = (boolean) =>
-	createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, boolean);
+export type SetIsCartOpen = ActionWithPayload<
+	CART_ACTION_TYPES.SET_IS_CART_OPEN,
+	boolean
+>;
 
-export const addItemToCart = (cartItems, productToAdd) => {
-	const newCartItems = addCartItem(cartItems, productToAdd);
-	return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
-};
-export const removeItemFromCart = (cartItems, cartItem) => {
-	const newCartItems = removeCartItem(cartItems, cartItem);
-	return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
-};
+export type SetCartItems = ActionWithPayload<
+	CART_ACTION_TYPES.SET_CART_ITEMS,
+	CartItem[]
+>;
 
-export const clearItemFromCart = (cartItems, cartItem) => {
-	const newCartItems = clearCartItem(cartItems, cartItem);
-	return createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newCartItems);
-};
+export const setIsCartOpen = withMatcher(
+	(boolean: boolean): SetIsCartOpen =>
+		createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, boolean)
+);
+
+export const setCartItems = withMatcher(
+	(cartItems: CartItem[]): SetCartItems =>
+		createAction(CART_ACTION_TYPES.SET_CART_ITEMS, cartItems)
+);
+
+export const addItemToCart = withMatcher(
+	(cartItems: CartItem[], productToAdd: CategoryItem): SetCartItems => {
+		const newCartItems = addCartItem(cartItems, productToAdd);
+		return setCartItems(newCartItems);
+	}
+);
+export const removeItemFromCart = withMatcher(
+	(cartItems: CartItem[], cartItem: CartItem): SetCartItems => {
+		const newCartItems = removeCartItem(cartItems, cartItem);
+		return setCartItems(newCartItems);
+	}
+);
+
+export const clearItemFromCart = withMatcher(
+	(cartItems: CartItem[], cartItem: CartItem): SetCartItems => {
+		const newCartItems = clearCartItem(cartItems, cartItem);
+		return setCartItems(newCartItems);
+	}
+);
