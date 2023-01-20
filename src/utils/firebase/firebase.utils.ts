@@ -22,6 +22,7 @@ import {
 	getDocs,
 	QueryDocumentSnapshot,
 } from "firebase/firestore";
+import { Category } from "../../store/categories/category.types";
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -53,10 +54,16 @@ export type AdditionalInformation = {
 	displayName?: string;
 };
 
+export type UserData = {
+	createdAt: Date;
+	displayName: string;
+	email: string;
+};
+
 export const createUserDocumentFromAuth = async (
 	userAuth: User,
 	additionalInformation = {} as AdditionalInformation
-) => {
+): Promise<void | QueryDocumentSnapshot<UserData>> => {
 	if (!userAuth) return;
 
 	const userDocRef = doc(db, "users", userAuth.uid);
@@ -78,7 +85,7 @@ export const createUserDocumentFromAuth = async (
 		}
 	}
 
-	return userDocRef;
+	return userSnapshot as QueryDocumentSnapshot<UserData>;
 };
 
 export const createAuthUserWithEmailAndPassword = async (
@@ -102,10 +109,16 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback: NextOrObserver<User>) =>
 	onAuthStateChanged(auth, callback);
 
-export const addCollectionAndDocuments = async (
-	collectionKey,
-	objectsToAdd
-) => {
+// as not sure what objectsToAdd context is, so using generic
+export type ObjectsToAdd = {
+	title: string;
+};
+
+// async function always return promise object, but in this case, it return nothing, so that use Promise<void>
+export const addCollectionAndDocuments = async <T extends ObjectsToAdd>(
+	collectionKey: string,
+	objectsToAdd: T[]
+): Promise<void> => {
 	// collectionKey is collection name
 	const collectionRef = collection(db, collectionKey);
 	const batch = writeBatch(db);
@@ -119,10 +132,13 @@ export const addCollectionAndDocuments = async (
 	console.log("done");
 };
 
-export const getCategoriesAndDocuments = async () => {
+export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
 	const collectionRef = collection(db, "categories");
 	const q = query(collectionRef);
 
 	const querySnapshot = await getDocs(q);
-	return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+	// as we get this from db, typescript have no idea on it, so we need to cast docSnapshot.data() by using as keyword
+	return querySnapshot.docs.map(
+		(docSnapshot) => docSnapshot.data() as Category
+	);
 };
