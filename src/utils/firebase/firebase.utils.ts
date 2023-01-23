@@ -45,6 +45,7 @@ provider.setCustomParameters({
 export const auth = getAuth();
 
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
 export const signInWithGoogleRedirect = () =>
 	signInWithRedirect(auth, provider);
 
@@ -60,6 +61,12 @@ export type UserData = {
 	email: string;
 };
 
+/**
+ * create user in firebase
+ * @param userAuth
+ * @param additionalInformation
+ * @returns
+ */
 export const createUserDocumentFromAuth = async (
 	userAuth: User,
 	additionalInformation = {} as AdditionalInformation
@@ -141,4 +148,18 @@ export const getCategoriesAndDocuments = async (): Promise<Category[]> => {
 	return querySnapshot.docs.map(
 		(docSnapshot) => docSnapshot.data() as Category
 	);
+};
+
+export const getCurrentUser = (): Promise<User | null> => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = onAuthStateChanged(
+			auth,
+			(userAuth) => {
+				// userAuth is UserImpl {accessToken, email, ....}
+				unsubscribe();
+				resolve(userAuth);
+			},
+			reject
+		);
+	});
 };

@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { getRedirectResult, AuthError, AuthErrorCodes } from "firebase/auth";
-import {
-	auth,
-	signInWithGooglePopup,
-	signInWithGoogleRedirect,
-	createUserDocumentFromAuth,
-	signInAuthUserWithEmailAndPassword,
-} from "../../utils/firebase/firebase.utils";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { AuthError, AuthErrorCodes } from "firebase/auth";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import { BUTTON_TYPE_CLASSES } from "../button/button.component";
 import { SignInContainer, ButtonsContainer } from "./sign-in-form.styled";
+import {
+	googleSignInStart,
+	emailSignInStart,
+} from "../../store/user/user.action";
 
 const defaultFormFields = {
 	email: "",
@@ -18,6 +16,7 @@ const defaultFormFields = {
 };
 
 const SignInForm = () => {
+	const dispatch = useDispatch();
 	const [formFields, setFormFields] = useState(defaultFormFields);
 	const { email, password } = formFields;
 
@@ -25,27 +24,13 @@ const SignInForm = () => {
 		setFormFields(defaultFormFields);
 	};
 
-	useEffect(() => {
-		const redirectResult = async () => {
-			const response = await getRedirectResult(auth);
-			if (response) {
-				await createUserDocumentFromAuth(response.user);
-			}
-		};
-		redirectResult();
-	}, []);
-
-	const signInWithGoogle = async () => {
-		const { user } = await signInWithGooglePopup();
-		// await createUserDocumentFromAuth(user);
+	const signInWithGoogle = () => {
+		dispatch(googleSignInStart());
 	};
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
-			const { user } = await signInAuthUserWithEmailAndPassword(
-				email,
-				password
-			);
+			dispatch(emailSignInStart(email, password));
 			resetFormFields();
 		} catch (error) {
 			switch ((error as AuthError).code) {

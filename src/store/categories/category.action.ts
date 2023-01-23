@@ -5,11 +5,7 @@ import {
 	ActionWithPayload,
 	withMatcher,
 } from "../../utils/reducer/reducer.util";
-import {
-	CATEGORIES_ACTION_TYPES,
-	Category,
-	CategoryItem,
-} from "./category.types";
+import { CATEGORIES_ACTION_TYPES, Category } from "./category.types";
 
 export type FetchCategoriesStart =
 	Action<CATEGORIES_ACTION_TYPES.FETCH_CATEGORIES_START>;
@@ -47,6 +43,10 @@ export const fetchCategoriesFailed = withMatcher(
 		createAction(CATEGORIES_ACTION_TYPES.FETCH_CATEGORIES_FAILED, error)
 );
 
+/**
+ * this is used by redux-thunk
+ * @returns
+ */
 export const fetchCategoriesAsync = () => async (dispatch) => {
 	dispatch(fetchCategoriesStart());
 	try {
