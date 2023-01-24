@@ -1,8 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
+import { configureStore, MiddlewareArray, Middleware } from "@reduxjs/toolkit";
+import { persistStore, persistReducer, PersistConfig } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import logger from "redux-logger";
-// import thunk from "redux-thunk";
 import createSagaMiddleware from "@redux-saga/core";
 import { rootReducer } from "./root-reducer";
 import { rootSaga } from "./root-saga";
@@ -12,22 +11,29 @@ import { rootSaga } from "./root-saga";
  */
 export type RootState = ReturnType<typeof rootReducer>;
 
-const persistConfig = {
+type ExtendedPersistConfig = PersistConfig<RootState> & {
+	whitelist: (keyof RootState)[];
+};
+
+const persistConfig: ExtendedPersistConfig = {
 	key: "root",
 	storage,
-	blacklist: ["user"],
+	whitelist: ["cart"],
 };
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const sagaMiddleware = createSagaMiddleware();
 
+const middleWares = [
+	import.meta.env.MODE !== "production" && logger,
+	sagaMiddleware,
+].filter((middleware): middleware is Middleware => Boolean(middleware));
+
 export const store = configureStore({
 	reducer: persistedReducer,
 	devTools: import.meta.env.MODE !== "production",
-	middleware: [
-		import.meta.env.MODE !== "production" && logger,
-		sagaMiddleware,
-	].filter(Boolean),
+	middleware: new MiddlewareArray().concat(middleWares),
 });
 
 sagaMiddleware.run(rootSaga);
