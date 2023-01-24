@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { StripeCardElement } from "@stripe/stripe-js";
 import { useSelector } from "react-redux";
 import {
 	PaymentFormContainer,
@@ -10,7 +11,9 @@ import { BUTTON_TYPE_CLASSES } from "../button/button.component";
 import { selectCartTotal } from "../../store/cart/cart.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
-const ifValidCardElement = (card) => card !== null;
+const ifValidCardElement = (
+	card: StripeCardElement | null
+): card is StripeCardElement => card !== null;
 
 const PaymentForm = () => {
 	const stripe = useStripe();
@@ -27,6 +30,7 @@ const PaymentForm = () => {
 
 		setIsProcessingPayment(true);
 
+		// get client secret
 		const response = await fetch(
 			"/.netlify/functions/create-payment-intent",
 			{
@@ -39,10 +43,8 @@ const PaymentForm = () => {
 		).then((res) => res.json());
 
 		const client_secret = response.paymentIntent.client_secret;
-		// const {
-		// 	paymentIntent: { client_secret },
-		// } = response;
 
+		// get card details (user enter)
 		const cardDetails = elements.getElement(CardElement);
 
 		if (!ifValidCardElement(cardDetails)) return;
@@ -59,7 +61,7 @@ const PaymentForm = () => {
 		setIsProcessingPayment(false);
 
 		if (paymentResult.error) {
-			alert("payment error", paymentResult.error);
+			alert(paymentResult.error);
 		} else {
 			if (paymentResult.paymentIntent.status === "succeeded") {
 				alert("Payment Successful");

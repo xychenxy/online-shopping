@@ -12,8 +12,8 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
-		<Provider store={store} loading={null}>
-			<PersistGate persistor={persistor}>
+		<Provider store={store}>
+			<PersistGate persistor={persistor} loading={null}>
 				<BrowserRouter>
 					<Elements stripe={stripePromise}>
 						<App />

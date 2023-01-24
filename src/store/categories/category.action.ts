@@ -42,18 +42,3 @@ export const fetchCategoriesFailed = withMatcher(
 	(error: Error): FetchCategoriesFailed =>
 		createAction(CATEGORIES_ACTION_TYPES.FETCH_CATEGORIES_FAILED, error)
 );
-
-/**
- * this is used by redux-thunk
- * @returns
- */
-export const fetchCategoriesAsync = () => async (dispatch) => {
-	dispatch(fetchCategoriesStart());
-	try {
-		const categoriesArray = await getCategoriesAndDocuments("categories");
-		dispatch(fetchCategoriesSuccess(categoriesArray));
-	} catch (error) {
-		dispatch(fetchCategoriesFailed(error));
-		// do some sentry here
-	}
-};
