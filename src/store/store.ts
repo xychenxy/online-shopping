@@ -7,6 +7,11 @@ import createSagaMiddleware from "@redux-saga/core";
 import { rootReducer } from "./root-reducer";
 import { rootSaga } from "./root-saga";
 
+/**
+ * types
+ */
+export type RootState = ReturnType<typeof rootReducer>;
+
 const persistConfig = {
 	key: "root",
 	storage,
