@@ -8,19 +8,22 @@ import {
 import Button from "../button/button.component";
 import CartItem from "../cart-item/cart-item.component";
 import { selectCartItems } from "../../store/cart/cart.selector";
+import { useCallback } from "react";
 
 const CardDropDown = () => {
 	const cartItems = useSelector(selectCartItems);
 	const navigate = useNavigate();
 
-	const goToCheckoutHandler = navigate("/checkout");
+	const goToCheckoutHandler = useCallback(() => {
+		navigate("/checkout");
+	}, []);
 
 	return (
 		<CartDropdownContainer>
 			<CartItems>
 				{cartItems.length ? (
-					cartItems.map((item, index) => (
-						<CartItem cartItem={item} key={index} />
+					cartItems.map((item) => (
+						<CartItem cartItem={item} key={item.id} />
 					))
 				) : (
 					<EmptyMessage>Your cart is empty</EmptyMessage>
