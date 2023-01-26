@@ -20,15 +20,15 @@ const Checkout = () => {
 		<CheckoutContainer>
 			<CheckoutHeader>
 				{["Product", "Description", "Quantity", "Price", "Remove"].map(
-					(name: string) => (
-						<HeaderBlock>
+					(name: string, index: number) => (
+						<HeaderBlock key={index}>
 							<span>{name}</span>
 						</HeaderBlock>
 					)
 				)}
 			</CheckoutHeader>
-			{cartItems.map((cartItem) => (
-				<CheckoutItem cartItem={cartItem} />
+			{cartItems.map((cartItem, index) => (
+				<CheckoutItem cartItem={cartItem} key={index} />
 			))}
 			<Total>Total: ${cartTotal}</Total>
 			<PaymentForm />

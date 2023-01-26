@@ -21,8 +21,8 @@ const CategoryPreview: FC<CategoryPreviewProps> = ({ products, title }) => {
 			<Preview>
 				{products
 					.filter((_, idx) => idx < 4)
-					.map((product) => (
-						<ProductCard product={product} />
+					.map((product, index) => (
+						<ProductCard product={product} key={index} />
 					))}
 			</Preview>
 		</CategoryPreviewContainer>
