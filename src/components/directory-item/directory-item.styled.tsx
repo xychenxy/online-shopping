@@ -3,6 +3,7 @@ import styled from "styled-components";
 type BackgroundImageProps = {
 	imageUrl: string;
 };
+
 export const BackgroundImage = styled.div<BackgroundImageProps>`
 	width: 100%;
 	height: 100%;
@@ -22,6 +23,7 @@ export const Body = styled.div`
 	background-color: white;
 	opacity: 0.7;
 	position: absolute;
+
 	h2 {
 		font-weight: bold;
 		margin: 0 6px 0;
@@ -35,6 +37,7 @@ export const Body = styled.div`
 		font-size: 16px;
 	}
 `;
+
 export const DirectoryItemContainer = styled.div`
 	min-width: 30%;
 	height: 240px;
@@ -45,6 +48,7 @@ export const DirectoryItemContainer = styled.div`
 	border: 1px solid black;
 	margin: 0 7.5px 15px;
 	overflow: hidden;
+
 	&:first-child {
 		margin-right: 7.5px;
 	}
@@ -52,6 +56,7 @@ export const DirectoryItemContainer = styled.div`
 	&:last-child {
 		margin-left: 7.5px;
 	}
+
 	&:hover {
 		cursor: pointer;
 
@@ -63,5 +68,9 @@ export const DirectoryItemContainer = styled.div`
 		${Body} {
 			opacity: 0.9;
 		}
+	}
+
+	@media screen and (max-width: 800px) {
+		height: 200px;
 	}
 `;
